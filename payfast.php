@@ -1,9 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
-require __DIR__ . '/vendor/autoload.php';
-
+require 'vendor/autoload.php';
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__);
@@ -13,11 +9,41 @@ $merchant_id = $_ENV['PAYFAST_MERCHANT_ID'];
 $merchant_key = $_ENV['PAYFAST_MERCHANT_KEY'];
 $passphrase = $_ENV['PAYFAST_API_PASSPHRASE'] ?? "";
 
-$return_url = "http://domain_name/payment-success.php";
-$cancel_url = "http://domain_name/payment-cancel.php";
-$notify_url = "http://domain_name/payfast_notify.php";
+$return_url = "http://localhost:8080/app.veridate.co.za/payment-success.php";
+$cancel_url = "http://localhost:8080/app.veridate.co.za/payment-cancel.php";
+$notify_url = "http://localhost:8080/app.veridate.co.za/payfast_notify.php";
 
-$amount = number_format("10.00", 2, '.', '');
+
+try {
+    // Initialize Payfast with your credentials
+    $payfast = new PayFast\PayFastPayment([
+        'merchantId' => $merchant_id, // Replace with your merchant ID
+        'merchantKey' => $merchant_key, // Replace with your merchant key
+        'passPhrase' => $passphrase, // Replace with your passphrase
+        'testMode' => true // Set to false for live environment
+    ]);
+
+    // Payment data
+    $data = [
+        'amount' => '100.00', // Amount in ZAR
+        'item_name' => 'Order #123', // Description of the item
+        'email_address' => 'test@example.co.za', // Required: Buyer's email address
+        'return_url' => $return_url,
+        'cancel_url' => $cancel_url,
+        'notify_url' => $notify_url
+    ];
+
+    // Generate payment identifier for onsite payment
+    // Generate the payment form HTML for Custom Integration
+    $htmlForm = $payfast->custom->createFormFields($data, ['value' => 'Pay Now', 'class' => 'btn']);
+
+    // Output the form
+    echo $htmlForm;
+} catch (Exception $e) {
+    echo 'There was an error: ' . $e->getMessage();
+}
+
+/* $amount = number_format("10.00", 2, '.', '');
 $plan_name = $_POST['plan'];
 $billing_date = date('Y-m-d', strtotime("+1 month"));
 $frequency = $_POST['frequency'] ?? "3";
@@ -69,4 +95,4 @@ $payfast_url = "https://www.payfast.co.za/eng/process?" . http_build_query($data
 file_put_contents("payfast_debug.txt", "Query String: " . $query_string . "\nGenerated Signature: " . $pf_signature, FILE_APPEND);
 
 echo json_encode(["payment_url" => $payfast_url]);
-?>
+ */?>
