@@ -9,9 +9,9 @@ $merchant_id = $_ENV['PAYFAST_MERCHANT_ID'];
 $merchant_key = $_ENV['PAYFAST_MERCHANT_KEY'];
 $passphrase = $_ENV['PAYFAST_API_PASSPHRASE'] ?? "";
 
-$return_url = "http://localhost:8080/app.veridate.co.za/payment-success.php";
-$cancel_url = "http://localhost:8080/app.veridate.co.za/payment-cancel.php";
-$notify_url = "http://localhost:8080/app.veridate.co.za/payfast_notify.php";
+$return_url = "http://localhost:8080/payment-success.php";
+$cancel_url = "http://localhost:8080/payment-cancel.php";
+$notify_url = "http://localhost:8080/payfast_notify.php";
 
 
 try {
